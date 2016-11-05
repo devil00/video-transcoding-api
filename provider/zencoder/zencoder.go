@@ -144,8 +144,8 @@ func (z *zencoderProvider) buildOutput(job *db.Job, preset db.Preset, outputFile
 		zencoderOutput.FixedKeyframeInterval = true
 	}
 	if preset.Video.Codec == "h264" {
-		zencoderOutput.H264Profile = preset.Profile
-		zencoderOutput.H264Level = preset.ProfileLevel
+		zencoderOutput.H264Profile = preset.Video.Profile
+		zencoderOutput.H264Level = preset.Video.ProfileLevel
 	}
 	if preset.RateControl == "CBR" {
 		zencoderOutput.ConstantBitrate = true
@@ -196,11 +196,7 @@ func (z *zencoderProvider) JobStatus(job *db.Job) (*provider.JobStatus, error) {
 
 func (z *zencoderProvider) statusMap(zencoderStatus string) provider.Status {
 	switch zencoderStatus {
-	case "waiting":
-		return provider.StatusQueued
-	case "pending":
-		return provider.StatusQueued
-	case "assigning":
+	case "waiting", "assigning", "pending":
 		return provider.StatusQueued
 	case "processing":
 		return provider.StatusStarted
